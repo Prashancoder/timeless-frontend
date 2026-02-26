@@ -31,9 +31,13 @@ function Home() {
 
      <Nav/>
 
-      <div className='w-[100%] lg:h-[90vh] h-[60vh] relative'>
-        <img src={home} className='object-cover md:object-fill   w-[100%] lg:h-[100%] h-[50vh]' alt="" />
- 
+     <div className="w-full aspect-video relative overflow-hidden">
+  <img
+    src={home}
+    alt="Banner"
+    className="w-full h-full object-cover"
+  />
+
         <div className='absolute lg:top-[30%] top-[75%]  md:top-[80%] w-[100%] flex items-center justify-center gap-3 flex-wrap'>
           
       {/* <button className='px-[20px] py-[10px] lg:bg-white bg-black lg:text-black text-white rounded-[10px] text-[18px] font-light flex gap-2 cursor-pointer items-center justify-center' onClick={()=>navigate("/searchwithai")}>Search with AI <img src={ai} className='w-[30px] h-[30px] rounded-full hidden lg:block' alt="" /><img src={ai1} className='w-[35px] h-[35px] rounded-full lg:hidden' alt="" /></button> */}
@@ -48,18 +52,6 @@ function Home() {
       <BeforeAfterResults />
       <FAQ />
       <BlogSection />
-
-        {/* 
-    
-        <BeforeAfterResults />
-        <FAQ />
-        <BlogSection />
-        <About />
-        <Footer /> */}
-
-
-      {/* <ExploreCourses/> */}
-      {/* <ReviewPage/> */}
       <Footer/>
       
     </div>
