@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const ClientTestimonials = () => {
   const marqueeRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false); // Scroll pause state
 
   useEffect(() => {
     // Load Instagram script
@@ -16,27 +17,35 @@ const ClientTestimonials = () => {
 
     // Auto scroll logic
     let scrollAmount = 0;
-    const speed = 0.4; // control speed (0.2 = slow, 0.6 = fast)
+    const speed = 0.4;
+    let requestRef;
 
     const scroll = () => {
       if (!marqueeRef.current) return;
 
-      scrollAmount += speed;
-      marqueeRef.current.scrollLeft = scrollAmount;
+      // Agar user ne hover kiya hai (isPaused true), toh scroll mat karo
+      if (!isPaused) {
+        scrollAmount += speed;
+        marqueeRef.current.scrollLeft = scrollAmount;
 
-      // Reset when end reached (infinite loop)
-      if (
-        marqueeRef.current.scrollLeft >=
-        marqueeRef.current.scrollWidth / 2
-      ) {
-        scrollAmount = 0;
+        if (
+          marqueeRef.current.scrollLeft >=
+          marqueeRef.current.scrollWidth / 2
+        ) {
+          scrollAmount = 0;
+        }
+      } else {
+        // Jab pause ho, toh scrollAmount ko current position pe update rakho
+        scrollAmount = marqueeRef.current.scrollLeft;
       }
 
-      requestAnimationFrame(scroll);
+      requestRef = requestAnimationFrame(scroll);
     };
 
-    scroll();
-  }, []);
+    requestRef = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(requestRef);
+  }, [isPaused]); // Depend on isPaused state
 
   const testimonials = [
     "https://www.instagram.com/reel/DTkuXF1jAcj/",
@@ -45,7 +54,6 @@ const ClientTestimonials = () => {
     "https://www.instagram.com/reel/DS4KtLrCB3P/",
   ];
 
-  // duplicate for seamless loop
   const loopData = [...testimonials, ...testimonials];
 
   return (
@@ -54,8 +62,7 @@ const ClientTestimonials = () => {
         {/* Heading */}
         <div className="text-center mb-14">
           <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-            Client <span style={{ color: "#D4AF37" }}>            Client Testimonials
-</span>
+            <span style={{ color: "#D4AF37" }}>Client Testimonials</span>
           </h2>
           <p className="text-black max-w-2xl mx-auto">
             Real experiences. Real transformations at{" "}
@@ -68,12 +75,14 @@ const ClientTestimonials = () => {
         {/* Infinite marquee */}
         <div
           ref={marqueeRef}
-          className="flex gap-10 overflow-x-hidden whitespace-nowrap"
+          className="flex gap-10 overflow-x-hidden whitespace-nowrap py-10"
+          onMouseEnter={() => setIsPaused(true)}   // Pause on hover
+          onMouseLeave={() => setIsPaused(false)}  // Resume on leave
         >
           {loopData.map((url, index) => (
             <div
               key={index}
-              className="min-w-[340px] md:min-w-[420px] bg-white rounded-2xl shadow-xl p-4"
+              className="min-w-[340px] md:min-w-[420px] bg-white rounded-2xl shadow-xl p-4 transition-transform duration-300 hover:scale-105"
             >
               <blockquote
                 className="instagram-media"
