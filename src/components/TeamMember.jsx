@@ -151,7 +151,10 @@ const TeamMember = () => {
                 <div className="h-[280px] w-full overflow-hidden relative">
                   <img
                     src={member.image}
-                    alt={member.name}
+                    alt={`${member.name} - ${member.role} at Timeless Aesthetics`}
+                    width="400"
+                    height="280"
+                    loading="lazy"
                     className="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -204,7 +207,9 @@ const TeamMember = () => {
               <div className="w-full md:w-2/5 h-64 md:h-auto">
                 <img
                   src={selectedMember.image}
-                  alt={selectedMember.name}
+                  alt={`${selectedMember.name} - ${selectedMember.role} at Timeless Aesthetics`}
+                  width="320"
+                  height="256"
                   className="w-full h-full object-cover object-top"
                 />
               </div>

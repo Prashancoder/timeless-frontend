@@ -63,7 +63,14 @@ const FeaturedClients = () => {
             key={index}
             className="flex-shrink-0 w-40 h-32 md:w-48 md:h-40 flex items-center justify-center bg-white rounded-xl shadow-md border-2 border-[#D4AF37] p-4 transform transition duration-500 hover:scale-105 hover:shadow-xl"
           >
-            <img src={logo} alt={`Client ${index + 1}`} className="h-full object-contain" />
+            <img 
+              src={logo} 
+              alt={`Featured client logo ${index + 1} - Timeless Aesthetics partner`} 
+              width="160"
+              height="128"
+              loading="lazy"
+              className="h-full object-contain" 
+            />
           </motion.div>
         ))}
       </div>

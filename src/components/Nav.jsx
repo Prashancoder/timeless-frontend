@@ -20,21 +20,28 @@ const DesktopNavItem = ({ item, navigate, openMenu, setOpenMenu, index }) => {
             className="relative text-white group"
             onMouseEnter={() => item.submenu && setOpenMenu(index)}
             onMouseLeave={() => item.submenu && setOpenMenu(null)}
+            role="navigation"
         >
-            <span
-                className="px-3 py-2 rounded-lg transition duration-200 hover:bg-white hover:text-black cursor-pointer flex items-center gap-1 font-medium text-sm"
+            <button
+                className="px-3 py-2 rounded-lg transition duration-200 hover:bg-white hover:text-black cursor-pointer flex items-center gap-1 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-white"
                 onClick={() => {
                     if (item.link) navigate(item.link);
                     setOpenMenu(null); // Close menu if clicked main link
                 }}
+                aria-label={item.label}
+                aria-expanded={item.submenu && openMenu === index}
+                aria-haspopup={item.submenu ? "true" : "false"}
             >
                 {item.label}
                 {item.submenu && <IoIosArrowDown className="w-3 h-3 ml-1" />}
-            </span>
+            </button>
 
             {/* Level 1 Submenu Dropdown */}
             {item.submenu && openMenu === index && (
-<div className="absolute top-full left-0 bg-white text-gray-800 rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 p-2 grid grid-cols-1 gap-1 min-w-[280px] z-50">
+<div className="absolute top-full left-0 bg-white text-gray-800 rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 p-2 grid grid-cols-1 gap-1 min-w-[280px] z-50"
+                role="menu"
+                aria-label="submenu"
+            >
                     {item.submenu.map((sub, sIdx) => (
                         <div key={sIdx} className="relative group/sub">
                             <div
@@ -119,6 +126,12 @@ const MobileNavItem = ({ item, navigate, openMenu, setOpenMenu, index }) => {
             <div
                 className="px-4 py-3 border-b border-gray-700 text-white flex justify-between items-center cursor-pointer hover:bg-gray-800 transition duration-150 font-semibold"
                 onClick={handleMainClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleMainClick()}
+                aria-label={item.label}
+                aria-expanded={isSubMenuOpen}
+                aria-haspopup={item.submenu ? "true" : "false"}
             >
                 {item.label}
                 {item.submenu && <IoIosArrowDown className={`w-4 h-4 transition-transform duration-300 ${isSubMenuOpen ? 'rotate-180' : 'rotate-0'}`} />}
@@ -364,7 +377,16 @@ function Nav() {
     };
 
     return (
-<nav className='w-full bg-black shadow-lg'>
+        <>
+        {/* Skip to main content link for screen readers */}
+        <a 
+            href="#main-content" 
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-[#D4AF37] text-white px-4 py-2 rounded-md z-50"
+        >
+            Skip to main content
+        </a>
+        
+        <nav className='w-full bg-black shadow-lg'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                 <div className='flex justify-between items-center h-20'>
 
@@ -570,9 +592,10 @@ function Nav() {
                 <div 
                     className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
                     onClick={() => setShowHam(false)}
-                ></div>
+                />
             )}
         </nav>
+        </>
     );
 }
 

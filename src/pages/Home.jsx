@@ -2,6 +2,7 @@ import React from 'react'
 import home from "../assets/44.jpeg"
 import mobileBanner from "../assets/000.jpeg"
 import Nav from '../components/Nav'
+import SEO from '../components/SEO'
 import { SiViaplay } from "react-icons/si";
 import ServicesSection from "../components/ServicesSection";
 import TeamMember from "../components/TeamMember";
@@ -20,33 +21,65 @@ import ai1 from '../assets/SearchAi.png'
 import ReviewPage from '../components/ReviewPage';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+
 function Home() {
   
       const navigate = useNavigate()
 
-  return (
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Timeless Aesthetics",
+        "description": "Aesthetic Skin Clinic in Amritsar offering laser hair removal, HIFU, HydraFacial, Botox, fillers, microbloding & bridal aesthetic services.",
+        "url": "https://www.timelessaestheticss.com",
+        "telephone": "+919876543210",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Amritsar",
+          "addressRegion": "Punjab",
+          "addressCountry": "IN"
+        },
+        "sameAs": [
+          "https://www.facebook.com/timelessaestheticss",
+          "https://www.instagram.com/timelessaestheticss"
+        ]
+      };
 
-    
+  return (
     
     <div className='w-[100%] overflow-hidden'>
-
+      <SEO 
+        title="Aesthetic Skin Clinic in Amritsar | Timeless Aesthetics"
+        description="Timeless Aesthetics Amritsar offers laser hair removal, HIFU, HydraFacial, Botox, fillers, microblading & bridal aesthetic services."
+        keywords="aesthetic clinic Amritsar, skin care clinic, laser hair removal, HIFU treatment, HydraFacial, Botox, dermal fillers, microblading, permanent makeup, bridal services"
+        canonicalUrl="https://www.timelessaestheticss.com/"
+        ogImage="/logo.png"
+        structuredData={structuredData}
+      />
+     <header>
      <Nav/>
+     </header>
 
+     <main>
      <div className="w-full aspect-video relative overflow-hidden">
      <div className="w-full aspect-video relative overflow-hidden">
 
 {/* Desktop Image */}
 <img
   src={home}
-  alt="Timeless Aesthetics facial aesthetics clinic Gurgaon"
+  alt="Timeless Aesthetics facial aesthetics clinic Amritsar"
   loading="eager"
+  width="1920"
+  height="1080"
   className="w-full h-full object-cover hidden md:block"
 />
 
 <img
   src={mobileBanner}
-  alt="Permanent makeup and cosmetology training academy Gurgaon"
+  alt="Permanent makeup and cosmetology training academy Amritsar"
   loading="lazy"
+  width="1080"
+  height="1920"
   className="w-full h-full object-cover block md:hidden"
 />
 
@@ -66,7 +99,8 @@ function Home() {
       <BeforeAfterResults />
       <FAQ />
       <BlogSection />
-      <Footer/>
+     </main>
+     <Footer/>
       
     </div>
 
