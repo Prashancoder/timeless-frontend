@@ -1,14 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from "react-redux";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import img from "../../assets/empty.jpg"; // fallback photo
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeftLong } from "react-icons/fa6";
+import axios from 'axios';
+import { serverUrl } from "../../App";
 function Dashboard() {
   const navigate = useNavigate()
   const { userData } = useSelector((state) => state.user);
   const { creatorCourseData } = useSelector((state) => state.course);
-  // update based on your store
+  const [leadsCount, setLeadsCount] = useState(0);
+  const [loadingLeads, setLoadingLeads] = useState(true);
+
+  useEffect(() => {
+    fetchLeadsCount();
+  }, []);
+
+  const fetchLeadsCount = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}/api/leads/all`);
+      const leads = response.data.leads || [];
+      setLeadsCount(leads.length);
+    } catch (error) {
+      console.error('Error fetching leads count:', error);
+    } finally {
+      setLoadingLeads(false);
+    }
+  };
 
   // Sample data - Replace with real API/course data
   const courseProgressData = creatorCourseData?.map(course => ({
@@ -47,7 +66,35 @@ function Dashboard() {
             <p className="text-gray-600 text-sm">
               {userData?.description || "Start creating amazing courses for your students!"}
             </p>
-            <h1 className='px-[10px] text-center  py-[10px] border-2  bg-black border-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer' onClick={() => navigate("/courses")}>Create Courses</h1>
+            <div className="flex gap-4 flex-wrap">
+              <h1 className='px-[10px] text-center  py-[10px] border-2  bg-black border-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer' onClick={() => navigate("/courses")}>Create Courses</h1>
+              <h1 className='px-[10px] text-center  py-[10px] border-2  bg-yellow-600 border-yellow-600 text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer' onClick={() => navigate("/dashboard/leads")}>
+                Leads ({loadingLeads ? '...' : leadsCount})
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Leads</h3>
+            <p className="text-3xl font-bold text-blue-600">{loadingLeads ? '...' : leadsCount}</p>
+            <p className="text-sm text-gray-600 mt-2">Contact form submissions</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Courses</h3>
+            <p className="text-3xl font-bold text-green-600">{creatorCourseData?.length || 0}</p>
+            <p className="text-sm text-gray-600 mt-2">Created courses</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Students</h3>
+            <p className="text-3xl font-bold text-purple-600">
+              {creatorCourseData?.reduce((sum, course) => sum + (course.enrolledStudents?.length || 0), 0) || 0}
+            </p>
+            <p className="text-sm text-gray-600 mt-2">Enrolled students</p>
           </div>
         </div>
 

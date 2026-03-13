@@ -4,7 +4,7 @@ import { GiHamburgerMenu, GiSplitCross } from 'react-icons/gi';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io'; 
 
 import { useNavigate } from 'react-router-dom';
-import { serverUrl } from '../App';
+import { serverUrl } from "../App";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';

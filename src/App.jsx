@@ -70,11 +70,12 @@ import ContactPage from './pages/ContactPage.jsx'
 import AboutUs from './pages/AboutUs'
 import DemoRoutes from './pages/DemoRoutes'
 import TestRoute from './pages/TestRoute'
-import BookAppointment from './pages/BookAppointment'
+import LeadsPage from './pages/admin/LeadsPage'
 
 // export const serverUrl = "https://new-website-backend-2.onrender.com"
  export const serverUrl = "https://new-website-backend-2.onrender.com"
 
+ 
 function App() {
   
   let {userData} = useSelector(state=>state.user)
@@ -90,7 +91,7 @@ function App() {
       <ScrollToTop/>
       <Routes>
         <Route path='/' element={<Home/>}/>
-        <Route path='/book-appointment' element={<BookAppointment/>}/>
+        {/* <Route path='/book-appointment' element={<BookAppointment/>}/> */}
         <Route path='/blog' element={<Blog/>}/>
         <Route path='/blogs' element={<Blogs/>}/>
         <Route path='/blogs/:slug' element={<BlogDetail/>}/>
@@ -123,6 +124,7 @@ function App() {
         
         
         <Route path='/dashboard' element={userData?.role === "educator" ? <Dashboard/> : <Navigate to="/signup"/>}/>
+        <Route path='/dashboard/leads' element={userData?.role === "educator" ? <LeadsPage/> : <Navigate to="/signup"/>}/>
         {/* Public Courses landing for non-educators, educator sees their Courses page */}
         <Route path='/courses' element={userData?.role === "educator" ? <Courses/> : <CourseIndex/>}/>
         {/* Top-level course category landing pages */}

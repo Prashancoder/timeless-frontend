@@ -1,201 +1,349 @@
 import React, { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle, ArrowRight } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageCircle, ArrowRight } from "lucide-react";
 import Header from "../components/Nav";
 import Footer from "../components/Footer";
-
-const LUXURY_GOLD = '#B8860B';
-const LUXURY_DARK = '#0f172a'; // Deep slate for better contrast
-const LUXURY_MUTED = '#64748b';
+import axios from "axios";
+import { serverUrl } from "../App";
+import { toast } from "react-toastify";
 
 const ContactPage = () => {
+
   const [formData, setFormData] = useState({
     firstName: "", lastName: "", email: "", phone: "", service: "", message: "",
   });
+
   const [submitting, setSubmitting] = useState(false);
-
-  const contactInfo = [
-    { icon: <Phone />, title: "Call Us", details: ["+91 8750027070", "+91 9876543210"], desc: "Available 9AM - 7PM" },
-    { icon: <Mail />, title: "Email Us", details: ["info@timelessaesthetics.in"], desc: "Response within 24hrs" },
-    { icon: <MapPin />, title: "Visit Us", details: ["Amritsar, Gurgaon, Jammu"], desc: "Find your nearest clinic" },
-    { icon: <Clock />, title: "Working Hours", details: ["Mon - Sat: 9AM - 7PM"], desc: "Sunday: 10AM - 5PM" }
-  ];
-
-  const clinics = [
-    {
-      name: "Gurgaon Headquarters",
-      address: "456 Aesthetic Avenue, Sector 45, Gurgaon, HR",
-      phone: "+91 9876543210",
-      services: ["Facial Aesthetics", "Cosmetology", "Academy"]
-    },
-    {
-      name: "Amritsar Clinic",
-      address: "123 Beauty Street, Ranjit Avenue, Amritsar, PB",
-      phone: "+91 8750027070",
-      services: ["Permanent Makeup", "Dentistry"]
-    },
-    {
-      name: "Jammu Clinic",
-      address: "789 Glamour Road, Gandhi Nagar, Jammu, J&K",
-      phone: "+91 8765432109",
-      services: ["All Aesthetic Services"]
-    }
-  ];
+  const [otp, setOtp] = useState("");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    setFormData(prev => ({ ...prev, [id]: value }));
   };
 
+  // Send OTP
+  const handleSendOtp = async () => {
+
+    if (!formData.firstName || !formData.email || !formData.phone || !formData.service) {
+      toast.error("Please fill required fields first");
+      return;
+    }
+
+    setSendingOtp(true);
+
+    try {
+
+      const res = await axios.post(`${serverUrl}/api/leads/send-otp`, formData);
+
+      toast.success(res.data.message);
+      setShowOtpInput(true);
+
+    } catch (err) {
+
+      toast.error(err.response?.data?.message || "Failed to send OTP");
+
+    } finally {
+
+      setSendingOtp(false);
+
+    }
+  };
+
+  // Verify OTP
+  const handleVerifyOtp = async () => {
+
+    if (otp.length !== 6) {
+      toast.error("Enter valid OTP");
+      return;
+    }
+
+    setVerifyingOtp(true);
+
+    try {
+
+      const res = await axios.post(`${serverUrl}/api/leads/verify-otp`, {
+        email: formData.email,
+        otp
+      });
+
+      toast.success(res.data.message);
+
+      setOtpVerified(true);
+      setShowOtpInput(false);
+
+    } catch (err) {
+
+      toast.error(err.response?.data?.message || "Invalid OTP");
+
+    } finally {
+
+      setVerifyingOtp(false);
+
+    }
+  };
+
+  // Submit Form
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+
+    if (!otpVerified) {
+      toast.error("Please verify OTP first");
+      return;
+    }
+
     setSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    alert("Thank you! Your inquiry has been received.");
-    setSubmitting(false);
-    setFormData({ firstName: "", lastName: "", email: "", phone: "", service: "", message: "" });
+
+    try {
+
+      const res = await axios.post(`${serverUrl}/api/leads/create`, {
+        email: formData.email
+      });
+
+      toast.success(res.data.message);
+
+      setFormData({
+        firstName: "", lastName: "", email: "", phone: "", service: "", message: ""
+      });
+
+      setOtp("");
+      setOtpVerified(false);
+
+    } catch (err) {
+
+      toast.error(err.response?.data?.message || "Submission failed");
+
+    } finally {
+
+      setSubmitting(false);
+
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-sans text-slate-900">
+    <div className="bg-gray-50 min-h-screen">
+
       <Header />
 
-      {/* --- HERO SECTION --- */}
-      <div className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-black">
-        <img 
-          src="/images/courses/000.webp" 
-          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105 transition-transform duration-1000 hover:scale-100"
-          alt="Luxury Aesthetic Background"
+      {/* HERO SECTION */}
+
+      <div className="relative h-[65vh] flex items-center justify-center text-center text-white">
+
+        <img
+          src="https://invest.up.gov.in/wp-content/uploads/2020/10/Contactus.jpg"
+          className="absolute w-full h-full object-cover"
+          alt="Contact clinic"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#fafafa]"></div>
-        
-        <div className="relative z-10 text-center px-4">
-          <span className="inline-block text-white tracking-[0.3em] uppercase text-sm mb-4 opacity-80">Get in Touch</span>
-          <h1 className="text-5xl md:text-7xl font-light text-white mb-6 italic">Contact <span className="font-bold not-italic">Timeless</span></h1>
-          <div className="w-24 h-1 bg-yellow-600 mx-auto"></div>
+
+        <div className="absolute inset-0 bg-black/60"></div>
+
+        <div className="relative z-10 max-w-3xl px-6">
+
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            Contact Our Experts
+          </h1>
+
+          <p className="text-lg text-gray-200 mb-6">
+            Have questions about treatments or courses?  
+            Our team is ready to assist you.
+          </p>
+
+          <a
+            href="#contact-form"
+            className="bg-yellow-600 hover:bg-yellow-700 px-8 py-3 rounded-full font-semibold transition"
+          >
+            Send Inquiry
+          </a>
+
         </div>
+
       </div>
 
-      <div className="container mx-auto px-4 -mt-20 relative z-20">
-        {/* --- CONTACT QUICK INFO --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-          {contactInfo.map((info, i) => (
-            <div key={i} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center transition-all hover:shadow-xl hover:-translate-y-2">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: `${LUXURY_GOLD}15`, color: LUXURY_GOLD }}>
-                {React.cloneElement(info.icon, { size: 24 })}
+      {/* CONTACT FORM SECTION */}
+
+      <div id="contact-form" className="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12">
+
+        {/* LEFT INFO */}
+
+        <div className="space-y-8">
+
+          <h2 className="text-3xl font-bold text-gray-900">
+            Get in Touch
+          </h2>
+
+          <p className="text-gray-600">
+            Our aesthetic experts are available to guide you about procedures,
+            consultations and training programs.
+          </p>
+
+          <div className="space-y-6">
+
+            <div className="flex gap-4 items-start">
+              <Phone className="text-yellow-600"/>
+              <div>
+                <p className="font-semibold">Phone</p>
+                <p className="text-gray-600">+91 8750027070</p>
               </div>
-              <h3 className="font-bold text-lg mb-2 uppercase tracking-wider">{info.title}</h3>
-              {info.details.map((d, idx) => <p key={idx} className="text-slate-600 font-medium">{d}</p>)}
-              <p className="text-xs text-slate-400 mt-4 italic">{info.desc}</p>
             </div>
-          ))}
+
+            <div className="flex gap-4 items-start">
+              <Mail className="text-yellow-600"/>
+              <div>
+                <p className="font-semibold">Email</p>
+                <p className="text-gray-600">info@timelessaesthetics.in</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-start">
+              <MapPin className="text-yellow-600"/>
+              <div>
+                <p className="font-semibold">Locations</p>
+                <p className="text-gray-600">Gurgaon • Amritsar • Jammu</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-start">
+              <Clock className="text-yellow-600"/>
+              <div>
+                <p className="font-semibold">Working Hours</p>
+                <p className="text-gray-600">Mon–Sat : 9AM – 7PM</p>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
-        {/* --- MAIN FORM SECTION --- */}
-        <div className="grid lg:grid-cols-5 gap-12 items-start mb-24">
-          <div className="lg:col-span-3 bg-white p-10 rounded-3xl shadow-2xl shadow-slate-200/50 border border-gray-100">
-            <div className="mb-10">
-              <h2 className="text-3xl font-bold mb-2">Send an Inquiry</h2>
-              <p className="text-slate-500">Experience the gold standard of aesthetic care. Fill out the form below.</p>
+        {/* FORM */}
+
+        <div className="bg-white rounded-2xl shadow-lg p-10">
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            <div className="grid grid-cols-2 gap-4">
+
+              <input
+                id="firstName"
+                placeholder="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="input"
+              />
+
+              <input
+                id="lastName"
+                placeholder="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="input"
+              />
+
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">First Name</label>
-                  <input id="firstName" required value={formData.firstName} onChange={handleChange} type="text" placeholder="John" 
-                    className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-yellow-600 focus:ring-0 transition-all outline-none bg-slate-50" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Last Name</label>
-                  <input id="lastName" value={formData.lastName} onChange={handleChange} type="text" placeholder="Doe" 
-                    className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-yellow-600 focus:ring-0 transition-all outline-none bg-slate-50" />
-                </div>
-              </div>
+            <input
+              id="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="input"
+            />
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
-                  <input id="email" required value={formData.email} onChange={handleChange} type="email" placeholder="john@example.com" 
-                    className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-yellow-600 focus:ring-0 transition-all outline-none bg-slate-50" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Phone Number</label>
-                  <input id="phone" required value={formData.phone} onChange={handleChange} type="tel" placeholder="+91 ..." 
-                    className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-yellow-600 focus:ring-0 transition-all outline-none bg-slate-50" />
-                </div>
-              </div>
+            <input
+              id="phone"
+              placeholder="Phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="input"
+            />
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Select Service</label>
-                <select id="service" value={formData.service} onChange={handleChange} 
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-yellow-600 outline-none bg-slate-50 appearance-none">
-                  <option value="">Choose a procedure</option>
-                  <option value="pmu">Permanent Makeup</option>
-                  <option value="cosmo">Cosmetology</option>
-                  <option value="facial">Facial Aesthetics</option>
-                </select>
-              </div>
+            <select
+              id="service"
+              value={formData.service}
+              onChange={handleChange}
+              className="input"
+            >
+              <option value="">Select Service</option>
+              <option value="pmu">Permanent Makeup</option>
+              <option value="cosmo">Cosmetology</option>
+              <option value="facial">Facial Aesthetics</option>
+            </select>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Message</label>
-                <textarea id="message" rows={4} value={formData.message} onChange={handleChange} placeholder="How can we help you?" 
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-yellow-600 outline-none bg-slate-50" />
-              </div>
+            <textarea
+              id="message"
+              rows="4"
+              placeholder="Message"
+              value={formData.message}
+              onChange={handleChange}
+              className="input"
+            />
 
-              <button 
-                type="submit" 
-                disabled={submitting}
-                className="w-full py-5 rounded-xl bg-slate-900 text-white font-bold uppercase tracking-[0.2em] hover:bg-black transition-all flex items-center justify-center gap-3 group"
+            {/* OTP */}
+
+            {!otpVerified && !showOtpInput && (
+              <button
+                type="button"
+                onClick={handleSendOtp}
+                className="btn-yellow w-full"
               >
-                {submitting ? "Processing..." : <>Send Message <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} /></>}
+                {sendingOtp ? "Sending OTP..." : "Send OTP"}
               </button>
-            </form>
-          </div>
+            )}
 
-          {/* --- MAP / SIDEBAR --- */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
-              <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-4">Our Presence</h3>
-                <p className="text-slate-400 mb-6">Experience world-class treatments at any of our luxury clinic locations across India.</p>
-                <div className="space-y-6">
-                  {clinics.map((c, i) => (
-                    <div key={i} className="group cursor-pointer">
-                      <h4 className="font-bold text-yellow-600 group-hover:text-yellow-500 transition-colors flex items-center gap-2">
-                        {c.name} <ArrowRight size={14} className="opacity-0 group-hover:opacity-100" />
-                      </h4>
-                      <p className="text-sm text-slate-300">{c.address}</p>
-                    </div>
-                  ))}
-                </div>
+            {showOtpInput && (
+              <div className="flex gap-4">
+
+                <input
+                  value={otp}
+                  onChange={(e)=>setOtp(e.target.value)}
+                  placeholder="Enter OTP"
+                  className="input flex-1"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleVerifyOtp}
+                  className="btn-green"
+                >
+                  Verify
+                </button>
+
               </div>
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-600/10 rounded-full blur-3xl"></div>
-            </div>
+            )}
 
-            <div className="rounded-3xl overflow-hidden h-[400px] border border-gray-200 shadow-lg shadow-slate-200">
-               <iframe
-                  title="Google Maps Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3370.6800880456803!2d77.09457447532891!3d28.458470475760315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d232106de6803%3A0x334abceb23079c69!2sTimeless%20Aesthetics!5e1!3m2!1sen!2sin!4v1770361822684!5m2!1sen!2sin"               
-               
-               width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy">
-               </iframe>
-            </div>
-          </div>
+            {otpVerified && (
+              <div className="text-green-600 font-medium">
+                Email verified ✓
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={!otpVerified || submitting}
+              className="btn-dark w-full"
+            >
+              {submitting ? "Submitting..." : "Submit Inquiry"}
+            </button>
+
+          </form>
+
         </div>
+
       </div>
 
-      {/* --- WHATSAPP FLOATING --- */}
-      <a 
-        href="https://wa.me/918750027070" 
-        target="_blank" 
-        rel="noreferrer"
-        className="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2 group"
+      {/* WHATSAPP BUTTON */}
+
+      <a
+        href="https://wa.me/918750027070"
+        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:scale-110 transition"
       >
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 whitespace-nowrap font-bold px-0 group-hover:px-2">Chat with us</span>
-        <MessageCircle size={28} />
+        <MessageCircle/>
       </a>
 
       <Footer />
+
     </div>
   );
 };

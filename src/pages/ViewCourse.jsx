@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { serverUrl } from '../App';
+import { serverUrl } from "../App";
 // Adjusted icon imports for stability and added new icons
 import { FaArrowLeftLong, FaRegStar } from "react-icons/fa6"; 
 import { FaLock, FaPlayCircle, FaStar } from "react-icons/fa";

@@ -5,6 +5,7 @@ import {
   ArrowRight, ShieldCheck, Zap, Globe 
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav"; 
 import Footer from "../components/Footer";
 
@@ -12,6 +13,10 @@ const CoursePage = () => {
   const location = useLocation();
   const [courseData, setCourseData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+
+  const navigate = useNavigate();
+
 
   // const courseDataMap = {
   //   "permanent-makeup/masters-eyebrows": {
@@ -336,6 +341,7 @@ courseDetailImage: "/courses2/PG Diploma in PMU.png",
     category: "Permanent Makeup",
     price: "₹40,000",
     image: "/images/goo.jpg",
+
 
     features: [
         "Basic SMP techniques",
@@ -1698,9 +1704,19 @@ image: "/images/dr.png", // replace with actual image
                     <span className="text-gray-500 text-[10px] uppercase font-bold tracking-[2px]">Investment Details</span>
                     <span className="text-white text-3xl font-black uppercase">Enquire For Fees</span>
                   </div>
-                  <button className="w-full bg-gradient-to-r from-[#C8A43F] to-[#B8932F] text-black font-black py-5 rounded-2xl text-sm transition-all hover:scale-[1.02] shadow-xl shadow-[#C8A43F]/10 uppercase tracking-[2px]">
-                    Enroll Now <ArrowRight size={20} className="inline ml-2" />
-                  </button>
+
+
+
+
+<button
+  onClick={() => navigate("/contact")}
+  className="w-full bg-gradient-to-r from-[#C8A43F] to-[#B8932F] text-black font-black py-5 rounded-2xl text-sm transition-all hover:scale-[1.02] shadow-xl shadow-[#C8A43F]/10 uppercase tracking-[2px]"
+>
+  Enroll Now <ArrowRight size={20} className="inline ml-2" />
+</button>
+                 
+                 
+                 
                   <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
                     {courseData.features.map((feature, i) => (
                       <div key={i} className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
