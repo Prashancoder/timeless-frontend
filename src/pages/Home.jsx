@@ -5,6 +5,7 @@ import Nav from "../components/Nav";
 import SEO from "../components/SEO";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import FloatingButtons from "../components/FloatingButtons";
 
 /* Lazy Loaded Components */
 const ServicesSection = lazy(() => import("../components/ServicesSection"));
@@ -103,6 +104,10 @@ function Home() {
           <BlogSection />
         </Suspense>
       </main>
+
+
+      <FloatingButtons />
+
 
       {/* Footer */}
       <Footer />
