@@ -856,6 +856,7 @@ courseDetailImage: "/courses2/PG Diploma in PMU.png",
             category: "Medical Aesthetics",
             price: "₹2,50,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/aesthetic.jpeg",
             features: [
               "Complete facial aesthetics training",
               "Advanced injection techniques",
@@ -918,9 +919,9 @@ image: "/images/dr.png", // replace with actual image
   price: "₹2,50,000",
 
   image: "/images/goo.jpg",
+  courseDetailImage: "/courses2/facial-ashtetic.jpeg",
 
   // Optional: add this for right-side poster
-  courseDetailImage: "/courses2/masters-facial-aesthetics.png",
 
   features: [
     "Complete facial aesthetics training",
@@ -988,11 +989,8 @@ image: "/images/dr.png", // replace with actual image
   level: "Advanced",
   category: "Facial Aesthetics",
   price: "₹60,000",
-
   image: "/images/goo.jpg",
-
-  // Optional: right side poster image
-  courseDetailImage: "/courses2/master-lipolytic.png",
+  courseDetailImage: "/courses2/lipo.jpeg",
 
   features: [
     "Advanced lipolytic techniques",
@@ -1268,6 +1266,7 @@ image: "/images/dr.png", // replace with actual image
             category: "Facial Aesthetics",
             price: "₹1,80,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/PG-Diploma-in-Facial-Aesthetics.jpeg",
             features: [
               "Complete facial aesthetics training",
               "Advanced injection techniques",
@@ -1349,6 +1348,7 @@ image: "/images/dr.png", // replace with actual image
             category: "Fellowship Courses",
             price: "₹2,00,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/fellowship.jpeg",
             features: [
               "Complete permanent makeup training",
               "Advanced cosmetology techniques",
@@ -1388,6 +1388,7 @@ image: "/images/dr.png", // replace with actual image
             category: "Fellowship Courses",
             price: "₹3,50,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/Fellowship-in-Facial-Aesthetics.jpeg",
             features: [
               "Complete aesthetic training",
               "All three specialties covered",
@@ -1427,6 +1428,7 @@ image: "/images/dr.png", // replace with actual image
             category: "Fellowship Courses",
             price: "₹2,80,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/fellowship.jpeg",
             features: [
               "Advanced facial aesthetics training",
               "All injection techniques",
@@ -1466,6 +1468,7 @@ image: "/images/dr.png", // replace with actual image
             category: "Fellowship Courses",
             price: "₹3,00,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/fellowship.jpeg",
             features: [
               "Complete permanent makeup training",
               "Advanced cosmetology",
@@ -1505,6 +1508,7 @@ image: "/images/dr.png", // replace with actual image
             category: "Fellowship Courses",
             price: "₹4,50,000",
             image: "/images/goo.jpg",
+            courseDetailImage: "/courses2/fellowship.jpeg",
             features: [
               "Complete aesthetic training",
               "All specialties covered",
